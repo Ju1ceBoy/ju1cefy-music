@@ -1,47 +1,31 @@
 .header {
   height: 64px;
-  border-bottom: 1px solid #282828;
+  border-bottom: 1px solid var(--border);
   padding: 10px 20px;
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.header-left {
-  display: flex;
-  gap: 8px;
-}
-
-.nav-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: none;
-  background: #111;
-  color: #fff;
-  cursor: pointer;
-}
-
 .search-wrap {
-  width: 100%;
+  flex: 1;
   max-width: 380px;
   position: relative;
 }
 
 .search-input {
   width: 100%;
-  max-width: none;
   height: 36px;
-  border: 1px solid #2b2b2b;
+  border: 1px solid var(--border-light);
   border-radius: 999px;
-  background: #121212;
-  color: #fff;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   padding: 0 96px 0 14px;
   outline: none;
 }
 
 .search-input::placeholder {
-  color: #9b9b9b;
+  color: var(--text-muted);
 }
 
 .search-shortcut {
@@ -50,23 +34,42 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 11px;
-  color: #9b9b9b;
-  border: 1px solid #2f2f2f;
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
   border-radius: 999px;
   padding: 2px 6px;
   line-height: 1;
-  background: #0f0f0f;
+  background: var(--bg-elevated);
   pointer-events: none;
 }
 
-.profile-btn {
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-left: auto;
+}
+
+.theme-btn {
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  background: var(--bg-elevated);
+  cursor: pointer;
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+}
+
+.profile-btn {
   border: none;
   border-radius: 999px;
-  background: #111;
-  color: #fff;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
   padding: 8px 14px;
   cursor: pointer;
+  font-size: 13px;
 }
 
 @media (max-width: 1024px) {
@@ -83,26 +86,33 @@
 @media (max-width: 768px) {
   .header {
     height: auto;
-    flex-wrap: wrap;
     padding: 10px 12px;
-  }
-
-  .header-left {
-    order: 1;
-  }
-
-  .profile-btn {
-    order: 2;
-    margin-left: 0;
+    gap: 8px;
   }
 
   .search-wrap {
-    order: 3;
-    max-width: 100%;
-    width: 100%;
+    flex: 1;
+    max-width: none;
+    min-width: 0;
   }
 
   .search-shortcut {
     display: none;
+  }
+
+  .header-right {
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+
+  .theme-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .profile-btn {
+    padding: 6px 10px;
+    font-size: 12px;
   }
 }

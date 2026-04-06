@@ -1,7 +1,7 @@
 .sidebar {
-  background: #000;
+  background: var(--bg-sidebar);
   padding: 20px 16px;
-  border-right: 1px solid #282828;
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -31,7 +31,7 @@
 }
 
 .playlists-title {
-  color: #b3b3b3;
+  color: var(--text-secondary);
   font-size: 12px;
   text-transform: uppercase;
   margin: 0 0 4px;
@@ -40,7 +40,7 @@
 .menu-item,
 .playlist-item {
   background: transparent;
-  color: #b3b3b3;
+  color: var(--text-secondary);
   border: none;
   text-align: left;
   padding: 8px 10px;
@@ -51,35 +51,88 @@
 
 .menu-item:hover,
 .playlist-item:hover {
-  color: #fff;
-  background: #1f1f1f;
+  color: var(--text-primary);
+  background: var(--bg-hover);
 }
 
-.menu-item.active {
-  color: #fff;
-  background: #2a2a2a;
+.menu-item.active,
+.playlist-item.active {
+  color: var(--text-primary);
+  background: var(--bg-active);
 }
 
 @media (max-width: 768px) {
   .sidebar {
     border-right: none;
-    border-bottom: 1px solid #282828;
-    padding: 12px;
-    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    gap: 8px;
   }
 
-  .menu,
-  .playlists {
+  .logo {
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .logo-text {
+    font-size: 18px;
+  }
+
+  .menu {
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 6px;
   }
 
-  .menu-item,
-  .playlist-item {
-    background: #1a1a1a;
+  .playlists {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+
+  .playlists::-webkit-scrollbar {
+    display: none;
+  }
+
+  .playlists-title {
+    display: none;
+  }
+
+  .menu-item {
+    background: var(--bg-card);
     border-radius: 999px;
-    padding: 6px 10px;
+    padding: 6px 14px;
+    font-size: 13px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .menu-item.active {
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+
+  .playlist-item {
+    background: transparent;
+    border: 1px solid var(--border-light);
+    border-radius: 999px;
+    padding: 5px 12px;
     font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .playlist-item.active {
+    background: var(--accent);
+    color: var(--accent-text);
+    border-color: var(--accent);
   }
 }

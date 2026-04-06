@@ -1,12 +1,37 @@
 .queue-panel {
-  border-left: 1px solid #282828;
+  border-left: 1px solid var(--border);
   padding: 20px 14px;
-  background: #141414;
+  background: var(--bg-secondary);
+}
+
+.queue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
 }
 
 .queue-title {
-  margin: 0 0 12px;
+  margin: 0;
   font-size: 18px;
+}
+
+.queue-close-btn {
+  display: none;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  place-items: center;
+}
+
+.queue-close-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
 }
 
 .queue-list {
@@ -16,24 +41,50 @@
 }
 
 .queue-item {
-  border: 1px solid #2b2b2b;
-  background: #1a1a1a;
-  color: #fff;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-primary);
   border-radius: 8px;
   padding: 10px;
-  cursor: pointer;
   text-align: left;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 8px;
 }
 
 .queue-item:hover {
-  background: #222;
+  background: var(--bg-card-hover);
 }
 
 .queue-item.active {
-  border-color: #1db954;
+  border-color: var(--accent);
+}
+
+.drag-handle {
+  cursor: grab;
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+  user-select: none;
+  touch-action: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.queue-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
 }
 
 .queue-item-title {
@@ -42,12 +93,65 @@
 
 .queue-item-artist {
   font-size: 12px;
-  color: #b3b3b3;
+  color: var(--text-secondary);
+}
+
+.queue-drawer-overlay {
+  display: none;
+}
+
+.queue-mobile {
+  display: none;
 }
 
 @media (max-width: 768px) {
-  .queue-panel {
+  .queue-desktop {
+    display: none;
+  }
+
+  .queue-drawer-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+    animation: fade-in 200ms ease;
+  }
+
+  .queue-mobile {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 60vh;
+    z-index: 1150;
     border-left: none;
-    border-top: 1px solid #282828;
+    border-radius: 16px 16px 0 0;
+    overflow-y: auto;
+    animation: slide-up 250ms ease;
+    padding: 16px;
+  }
+
+  .queue-close-btn {
+    display: grid;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

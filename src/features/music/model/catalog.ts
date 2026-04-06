@@ -1,13 +1,13 @@
-import type { Album } from './types'
+import type { Album, Playlist } from './types'
 
 export const menuItems = ['Home', 'Search', 'Your Library']
 
-export const playlists = [
-  'Daily Mix 1',
-  'Daily Mix 2',
-  'Chill Hits',
-  'Rock Classics',
-  'Coding Focus',
+export const playlists: Playlist[] = [
+  { id: 1, name: 'Daily Mix 1', albumIds: [1, 3, 5] },
+  { id: 2, name: 'Daily Mix 2', albumIds: [2, 4, 6] },
+  { id: 3, name: 'Chill Hits', albumIds: [1, 2, 4] },
+  { id: 4, name: 'Rock Classics', albumIds: [3, 5, 6] },
+  { id: 5, name: 'Coding Focus', albumIds: [1, 3, 6] },
 ]
 
 export const albums: Album[] = [

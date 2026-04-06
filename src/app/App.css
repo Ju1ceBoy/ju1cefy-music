@@ -1,7 +1,7 @@
 .app {
   min-height: 100vh;
-  background: #121212;
-  color: #fff;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   display: grid;
   grid-template-columns: 240px 1fr;
   grid-template-rows: 1fr 81px;
@@ -10,7 +10,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, #202020 0%, #181818 20%, #181818 100%);
+  background: var(--bg-content);
 }
 
 .content-body {
@@ -25,9 +25,9 @@
   right: 16px;
   bottom: 96px;
   z-index: 1200;
-  border: 1px solid #1db954;
-  background: #13291d;
-  color: #d2f5de;
+  border: 1px solid var(--accent);
+  background: var(--toast-bg);
+  color: var(--toast-text);
   border-radius: 10px;
   padding: 10px 14px;
   font-size: 13px;
@@ -53,6 +53,7 @@
 
   .content-body {
     grid-template-columns: 1fr;
+    padding-bottom: 180px;
   }
 
   .toast {

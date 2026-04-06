@@ -6,14 +6,18 @@ import Sidebar from '../features/navigation/ui/Sidebar'
 import QueuePanel from '../features/queue/ui/QueuePanel'
 import { albums, menuItems, playlists } from '../features/music/model/catalog'
 import { useAudioPlayer } from '../features/player/hooks/useAudioPlayer'
-import type { Album } from '../features/music/model/types'
+import type { Album, Playlist } from '../features/music/model/types'
 import './App.css'
 
 type SidebarView = 'Home' | 'Search' | 'Your Library'
+type Theme = 'dark' | 'light'
 
 function App() {
   type RepeatMode = 'off' | 'all' | 'one'
 
+  const [theme, setTheme] = useState<Theme>(() => {
+    return (localStorage.getItem('theme') as Theme) || 'dark'
+  })
   const [repeatMode, setRepeatMode] = useState<RepeatMode>('off')
   const [replayTick, setReplayTick] = useState(0)
   const [currentAlbum, setCurrentAlbum] = useState<Album>(albums[0])
@@ -24,6 +28,8 @@ function App() {
   const [searchFocusSignal, setSearchFocusSignal] = useState(0)
   const [isShuffle, setIsShuffle] = useState(false)
   const [activeView, setActiveView] = useState<SidebarView>('Home')
+  const [activePlaylistId, setActivePlaylistId] = useState<number | null>(null)
+  const [isQueueOpen, setIsQueueOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [toastKey, setToastKey] = useState(0)
   const [likedAlbumIds, setLikedAlbumIds] = useState<number[]>(() => {
@@ -34,6 +40,11 @@ function App() {
       return []
     }
   })
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    localStorage.setItem('theme', theme)
+  }, [theme])
 
   useEffect(() => {
     localStorage.setItem('likedAlbumIds', JSON.stringify(likedAlbumIds))
@@ -127,9 +138,19 @@ function App() {
     })
   }
 
-  const libraryAlbums = albums.filter((album) => likedAlbumIds.includes(album.id))
-  const searchableAlbums = activeView === 'Your Library' ? libraryAlbums : albums
-  const displayedAlbums = searchableAlbums.filter((album) => {
+  const activePlaylist = playlists.find((p) => p.id === activePlaylistId) ?? null
+
+  const baseAlbums = (() => {
+    if (activePlaylistId !== null && activePlaylist) {
+      return albums.filter((a) => activePlaylist.albumIds.includes(a.id))
+    }
+    if (activeView === 'Your Library') {
+      return albums.filter((a) => likedAlbumIds.includes(a.id))
+    }
+    return albums
+  })()
+
+  const displayedAlbums = baseAlbums.filter((album) => {
     const q = searchQuery.trim().toLowerCase()
     if (!q) return true
     return album.title.toLowerCase().includes(q) || album.artist.toLowerCase().includes(q)
@@ -143,34 +164,52 @@ function App() {
     setToastKey((prev) => prev + 1)
   }
 
-  const currentIndex = getAlbumIndex(currentAlbum.id)
+  const [queue, setQueue] = useState<Album[]>(() => {
+    return [...albums.slice(1)]
+  })
 
-  const queue = [
-    ...albums.slice(currentIndex + 1),
-    ...albums.slice(0, currentIndex),
-  ]
+  useEffect(() => {
+    const idx = getAlbumIndex(currentAlbum.id)
+    setQueue([
+      ...albums.slice(idx + 1),
+      ...albums.slice(0, idx),
+    ])
+  }, [currentAlbum.id])
 
-  const sectionTitle =
-    activeView === 'Your Library'
-      ? 'Your Library'
-      : activeView === 'Search'
-        ? 'Search Results'
-        : 'Made for you'
+  const sectionTitle = (() => {
+    if (activePlaylist) return activePlaylist.name
+    if (activeView === 'Your Library') return 'Your Library'
+    if (activeView === 'Search') return 'Search Results'
+    return 'Made for you'
+  })()
 
-  const emptyMessage =
-    activeView === 'Your Library'
-      ? searchQuery.trim()
+  const emptyMessage = (() => {
+    if (activePlaylist) {
+      return searchQuery.trim()
+        ? 'В плейлисте ничего не найдено по этому запросу.'
+        : 'В этом плейлисте пока нет треков.'
+    }
+    if (activeView === 'Your Library') {
+      return searchQuery.trim()
         ? 'В избранном ничего не найдено по этому запросу.'
         : 'В библиотеке пока нет избранных треков.'
-      : 'Ничего не найдено. Попробуй другой запрос.'
+    }
+    return 'Ничего не найдено. Попробуй другой запрос.'
+  })()
 
   const handleMenuItemClick = (item: string) => {
     const nextView = item as SidebarView
     setActiveView(nextView)
+    setActivePlaylistId(null)
 
     if (nextView === 'Search') {
       setSearchFocusSignal((prev) => prev + 1)
     }
+  }
+
+  const handlePlaylistClick = (playlist: Playlist) => {
+    setActivePlaylistId(playlist.id)
+    setActiveView('Home')
   }
 
   useEffect(() => {
@@ -222,7 +261,9 @@ function App() {
         menuItems={menuItems}
         playlists={playlists}
         activeMenuItem={activeView}
+        activePlaylistId={activePlaylistId}
         onMenuItemClick={handleMenuItemClick}
+        onPlaylistClick={handlePlaylistClick}
       />
 
       <main className="content">
@@ -230,7 +271,9 @@ function App() {
           username="Ju1ceBoy"
           searchQuery={searchQuery}
           searchFocusSignal={searchFocusSignal}
+          theme={theme}
           onSearchChange={setSearchQuery}
+          onToggleTheme={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
         />
 
         <div className="content-body">
@@ -247,7 +290,10 @@ function App() {
           <QueuePanel
             queue={queue}
             currentAlbumId={currentAlbum.id}
+            isOpen={isQueueOpen}
+            onClose={() => setIsQueueOpen(false)}
             onSelectAlbum={handleAlbumClick}
+            onReorder={setQueue}
           />
         </div>
       </main>
@@ -271,6 +317,7 @@ function App() {
         onToggleShuffle={() => setIsShuffle((prev) => !prev)}
         onToggleRepeat={toggleRepeatMode}
         onToggleLikeCurrent={() => toggleLikeAlbum(currentAlbum.id)}
+        onToggleQueue={() => setIsQueueOpen((prev) => !prev)}
       />
 
       <audio ref={audioRef} preload="metadata" />

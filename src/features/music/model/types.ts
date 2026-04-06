@@ -6,3 +6,9 @@ export type Album = {
   trackUrl: string
   coverUrl: string
 }
+
+export type Playlist = {
+  id: number
+  name: string
+  albumIds: number[]
+}

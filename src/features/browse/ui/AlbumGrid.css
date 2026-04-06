@@ -15,7 +15,7 @@
 }
 
 .album-card {
-  background: #1b1b1b;
+  background: var(--bg-card);
   border-radius: 10px;
   padding: 12px;
   cursor: pointer;
@@ -24,12 +24,12 @@
 }
 
 .album-card:hover {
-  background: #242424;
+  background: var(--bg-card-hover);
 }
 
 .album-card.active {
-  background: #2a2a2a;
-  outline: 1px solid #3f3f3f;
+  background: var(--bg-active);
+  outline: 1px solid var(--border-active);
 }
 
 .album-cover {
@@ -46,12 +46,12 @@
 
 .album-artist {
   margin: 0;
-  color: #b3b3b3;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .empty-state {
-  color: #b3b3b3;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -60,8 +60,8 @@
   top: 10px;
   right: 10px;
   border: none;
-  background: rgba(0, 0, 0, 0.45);
-  color: #fff;
+  background: var(--like-badge-bg);
+  color: var(--text-primary);
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -69,7 +69,7 @@
 }
 
 .like-badge.liked {
-  color: #1db954;
+  color: var(--accent);
 }
 
 @media (max-width: 1024px) {
@@ -84,12 +84,44 @@
   }
 
   .section-title {
-    font-size: 22px;
-    margin-bottom: 12px;
+    font-size: 20px;
+    margin-bottom: 10px;
   }
 
   .album-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .album-card {
+    padding: 8px;
+    border-radius: 8px;
+  }
+
+  .album-cover {
+    border-radius: 6px;
+  }
+
+  .album-title {
+    margin: 8px 0 2px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .album-artist {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .like-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+    top: 6px;
+    right: 6px;
   }
 }

@@ -5,10 +5,12 @@ type HeaderProps = {
   username: string
   searchQuery: string
   searchFocusSignal: number
+  theme: 'dark' | 'light'
   onSearchChange: (value: string) => void
+  onToggleTheme: () => void
 }
 
-function Header({ username, searchQuery, searchFocusSignal, onSearchChange }: HeaderProps) {
+function Header({ username, searchQuery, searchFocusSignal, theme, onSearchChange, onToggleTheme }: HeaderProps) {
   const searchInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
@@ -19,11 +21,6 @@ function Header({ username, searchQuery, searchFocusSignal, onSearchChange }: He
 
   return (
     <header className="header">
-      <div className="header-left">
-        <button className="nav-btn">{'<'}</button>
-        <button className="nav-btn">{'>'}</button>
-      </div>
-
       <div className="search-wrap">
         <input
           ref={searchInputRef}
@@ -37,7 +34,12 @@ function Header({ username, searchQuery, searchFocusSignal, onSearchChange }: He
         </span>
       </div>
 
-      <button className="profile-btn">{username}</button>
+      <div className="header-right">
+        <button className="theme-btn" onClick={onToggleTheme}>
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
+        <button className="profile-btn">{username}</button>
+      </div>
     </header>
   )
 }

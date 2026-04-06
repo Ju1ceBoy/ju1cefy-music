@@ -1,14 +1,24 @@
+import type { Playlist } from '../../music/model/types'
 import ju1cefyLogo from '../../../assets/ju1cefy.png'
 import './Sidebar.css'
 
 type SidebarProps = {
   menuItems: string[]
-  playlists: string[]
+  playlists: Playlist[]
   activeMenuItem: string
+  activePlaylistId: number | null
   onMenuItemClick: (item: string) => void
+  onPlaylistClick: (playlist: Playlist) => void
 }
 
-function Sidebar({ menuItems, playlists, activeMenuItem, onMenuItemClick }: SidebarProps) {
+function Sidebar({
+  menuItems,
+  playlists,
+  activeMenuItem,
+  activePlaylistId,
+  onMenuItemClick,
+  onPlaylistClick,
+}: SidebarProps) {
   return (
     <aside className="sidebar">
       <div className="logo">
@@ -20,7 +30,7 @@ function Sidebar({ menuItems, playlists, activeMenuItem, onMenuItemClick }: Side
         {menuItems.map((item) => (
           <button
             key={item}
-            className={`menu-item ${activeMenuItem === item ? 'active' : ''}`}
+            className={`menu-item ${activeMenuItem === item && activePlaylistId === null ? 'active' : ''}`}
             onClick={() => onMenuItemClick(item)}
           >
             {item}
@@ -31,8 +41,12 @@ function Sidebar({ menuItems, playlists, activeMenuItem, onMenuItemClick }: Side
       <div className="playlists">
         <p className="playlists-title">Playlists</p>
         {playlists.map((playlist) => (
-          <button key={playlist} className="playlist-item">
-            {playlist}
+          <button
+            key={playlist.id}
+            className={`playlist-item ${activePlaylistId === playlist.id ? 'active' : ''}`}
+            onClick={() => onPlaylistClick(playlist)}
+          >
+            {playlist.name}
           </button>
         ))}
       </div>
