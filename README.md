@@ -4,6 +4,8 @@ A fully functional Spotify-inspired music player built from scratch with **React
 
 **[Live Demo](https://ju1cefy-music.vercel.app)**
 
+![Ju1cefy Preview](src/assets/preview.png)
+
 ![React](https://img.shields.io/badge/React-19-61dafb?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript)
 ![Vite](https://img.shields.io/badge/Vite-8-646cff?logo=vite)
