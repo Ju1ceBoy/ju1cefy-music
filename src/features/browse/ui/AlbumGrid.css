@@ -1,0 +1,95 @@
+.main-view {
+  flex: 1;
+  padding: 24px;
+}
+
+.section-title {
+  margin: 0 0 16px;
+  font-size: 28px;
+}
+
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.album-card {
+  background: #1b1b1b;
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  position: relative;
+}
+
+.album-card:hover {
+  background: #242424;
+}
+
+.album-card.active {
+  background: #2a2a2a;
+  outline: 1px solid #3f3f3f;
+}
+
+.album-cover {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.album-title {
+  margin: 10px 0 4px;
+  font-size: 16px;
+}
+
+.album-artist {
+  margin: 0;
+  color: #b3b3b3;
+  font-size: 14px;
+}
+
+.empty-state {
+  color: #b3b3b3;
+  font-size: 14px;
+}
+
+.like-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.like-badge.liked {
+  color: #1db954;
+}
+
+@media (max-width: 1024px) {
+  .album-grid {
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .main-view {
+    padding: 14px 12px;
+  }
+
+  .section-title {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .album-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
