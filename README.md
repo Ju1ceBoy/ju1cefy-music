@@ -2,9 +2,12 @@
 
 A fully functional Spotify-inspired music player built from scratch with **React** and **TypeScript**.
 
+**[Live Demo](https://ju1cefy-music.vercel.app)**
+
 ![React](https://img.shields.io/badge/React-19-61dafb?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript)
 ![Vite](https://img.shields.io/badge/Vite-8-646cff?logo=vite)
+![Deploy](https://img.shields.io/badge/Vercel-deployed-black?logo=vercel)
 
 ## Features
 
@@ -54,8 +57,8 @@ src/
 
 ```bash
 # Clone the repository
-git clone https://github.com/ju1ceboy/spotify-clone.git
-cd spotify-clone
+git clone https://github.com/Ju1ceBoy/ju1cefy-music.git
+cd ju1cefy-music
 
 # Install dependencies
 npm install
