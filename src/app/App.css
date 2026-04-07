@@ -5,6 +5,7 @@
   display: grid;
   grid-template-columns: 240px 1fr;
   grid-template-rows: 1fr 81px;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .content {
