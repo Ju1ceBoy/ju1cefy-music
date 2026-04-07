@@ -4,13 +4,15 @@ import Header from '../features/navigation/ui/Header'
 import Player from '../features/player/ui/Player'
 import Sidebar from '../features/navigation/ui/Sidebar'
 import QueuePanel from '../features/queue/ui/QueuePanel'
-import { albums, menuItems, playlists } from '../features/music/model/catalog'
+import NowPlaying from '../features/player/ui/NowPlaying'
+import { albums, menuItems, playlists as defaultPlaylists } from '../features/music/model/catalog'
 import { useAudioPlayer } from '../features/player/hooks/useAudioPlayer'
 import type { Album, Playlist } from '../features/music/model/types'
 import './App.css'
 
 type SidebarView = 'Home' | 'Search' | 'Your Library'
 type Theme = 'dark' | 'light'
+type SortMode = 'default' | 'title' | 'artist'
 
 function App() {
   type RepeatMode = 'off' | 'all' | 'one'
@@ -27,9 +29,19 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchFocusSignal, setSearchFocusSignal] = useState(0)
   const [isShuffle, setIsShuffle] = useState(false)
+  const [sortMode, setSortMode] = useState<SortMode>('default')
   const [activeView, setActiveView] = useState<SidebarView>('Home')
   const [activePlaylistId, setActivePlaylistId] = useState<number | null>(null)
+  const [userPlaylists, setUserPlaylists] = useState<Playlist[]>(() => {
+    try {
+      const raw = localStorage.getItem('playlists')
+      return raw ? (JSON.parse(raw) as Playlist[]) : defaultPlaylists
+    } catch {
+      return defaultPlaylists
+    }
+  })
   const [isQueueOpen, setIsQueueOpen] = useState(false)
+  const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [toastKey, setToastKey] = useState(0)
   const [likedAlbumIds, setLikedAlbumIds] = useState<number[]>(() => {
@@ -49,6 +61,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem('likedAlbumIds', JSON.stringify(likedAlbumIds))
   }, [likedAlbumIds])
+
+  useEffect(() => {
+    localStorage.setItem('playlists', JSON.stringify(userPlaylists))
+  }, [userPlaylists])
 
   const getAlbumIndex = (albumId: number) => albums.findIndex((album) => album.id === albumId)
 
@@ -138,7 +154,7 @@ function App() {
     })
   }
 
-  const activePlaylist = playlists.find((p) => p.id === activePlaylistId) ?? null
+  const activePlaylist = userPlaylists.find((p) => p.id === activePlaylistId) ?? null
 
   const baseAlbums = (() => {
     if (activePlaylistId !== null && activePlaylist) {
@@ -150,11 +166,35 @@ function App() {
     return albums
   })()
 
-  const displayedAlbums = baseAlbums.filter((album) => {
-    const q = searchQuery.trim().toLowerCase()
-    if (!q) return true
-    return album.title.toLowerCase().includes(q) || album.artist.toLowerCase().includes(q)
-  })
+  const displayedAlbums = (() => {
+    const filtered = baseAlbums.filter((album) => {
+      const q = searchQuery.trim().toLowerCase()
+      if (!q) return true
+      return album.title.toLowerCase().includes(q) || album.artist.toLowerCase().includes(q)
+    })
+    if (sortMode === 'title') return [...filtered].sort((a, b) => a.title.localeCompare(b.title))
+    if (sortMode === 'artist') return [...filtered].sort((a, b) => a.artist.localeCompare(b.artist))
+    return filtered
+  })()
+
+  const handleAddToPlaylist = (albumId: number, playlistId: number) => {
+    setUserPlaylists((prev) =>
+      prev.map((pl) => {
+        if (pl.id !== playlistId) return pl
+        const has = pl.albumIds.includes(albumId)
+        return {
+          ...pl,
+          albumIds: has
+            ? pl.albumIds.filter((id) => id !== albumId)
+            : [...pl.albumIds, albumId],
+        }
+      })
+    )
+    const pl = userPlaylists.find((p) => p.id === playlistId)
+    const has = pl?.albumIds.includes(albumId)
+    setToastMessage(has ? `Removed from ${pl?.name}` : `Added to ${pl?.name}`)
+    setToastKey((prev) => prev + 1)
+  }
 
   const toggleLikeAlbum = (albumId: number) => {
     const isLiked = likedAlbumIds.includes(albumId)
@@ -259,7 +299,7 @@ function App() {
     <div className="app">
       <Sidebar
         menuItems={menuItems}
-        playlists={playlists}
+        playlists={userPlaylists}
         activeMenuItem={activeView}
         activePlaylistId={activePlaylistId}
         onMenuItemClick={handleMenuItemClick}
@@ -281,10 +321,14 @@ function App() {
             albums={displayedAlbums}
             currentAlbumId={currentAlbum.id}
             likedAlbumIds={likedAlbumIds}
+            playlists={userPlaylists}
+            sortMode={sortMode}
             title={sectionTitle}
             emptyMessage={emptyMessage}
             onAlbumClick={handleAlbumClick}
             onToggleLike={toggleLikeAlbum}
+            onAddToPlaylist={handleAddToPlaylist}
+            onSortChange={setSortMode}
           />
 
           <QueuePanel
@@ -318,7 +362,28 @@ function App() {
         onToggleRepeat={toggleRepeatMode}
         onToggleLikeCurrent={() => toggleLikeAlbum(currentAlbum.id)}
         onToggleQueue={() => setIsQueueOpen((prev) => !prev)}
+        onOpenNowPlaying={() => setIsNowPlayingOpen(true)}
       />
+
+      {isNowPlayingOpen && (
+        <NowPlaying
+          currentAlbum={currentAlbum}
+          isPlaying={isPlaying}
+          currentTime={currentTime}
+          duration={duration}
+          isCurrentLiked={likedAlbumIds.includes(currentAlbum.id)}
+          repeatMode={repeatMode}
+          isShuffle={isShuffle}
+          onTogglePlay={() => setIsPlaying((prev) => !prev)}
+          onPrev={goToPrev}
+          onNext={goToNext}
+          onSeek={seekTo}
+          onToggleShuffle={() => setIsShuffle((prev) => !prev)}
+          onToggleRepeat={toggleRepeatMode}
+          onToggleLikeCurrent={() => toggleLikeAlbum(currentAlbum.id)}
+          onClose={() => setIsNowPlayingOpen(false)}
+        />
+      )}
 
       <audio ref={audioRef} preload="metadata" />
 

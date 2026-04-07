@@ -21,6 +21,7 @@ type PlayerProps = {
   isCurrentLiked: boolean
   onToggleLikeCurrent: () => void
   onToggleQueue: () => void
+  onOpenNowPlaying: () => void
 }
 
 function formatTime(seconds: number) {
@@ -123,20 +124,30 @@ function Player({
   isCurrentLiked,
   onToggleLikeCurrent,
   onToggleQueue,
+  onOpenNowPlaying,
 }: PlayerProps) {
   const repeatLabel = repeatMode === 'one' ? '1' : ''
 
   return (
     <footer className="player">
-      <div className="player-track-info">
+      <div className="player-track-info" onClick={onOpenNowPlaying} role="button" tabIndex={0}>
         <img
           className="player-cover"
           src={currentAlbum.coverUrl}
           alt={currentAlbum.title}
           style={{ backgroundColor: currentAlbum.color }}
         />
-        <div>
-          <p className="player-title">{currentAlbum.title}</p>
+        <div className="player-text">
+          <p className="player-title">
+            {isPlaying && (
+              <span className="equalizer">
+                <span className="eq-bar" />
+                <span className="eq-bar" />
+                <span className="eq-bar" />
+              </span>
+            )}
+            {currentAlbum.title}
+          </p>
           <p className="player-artist">{currentAlbum.artist}</p>
         </div>
       </div>
